@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Happy Birthday my Boy 🎂</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#070d1a; --bg2:#0e1a33; --card:rgba(255,255,255,.06); --line:rgba(255,255,255,.12);
+    --ink:#e8eefb; --mute:#9fb0cf; --accent:#4cc9f0; --accent2:#4895ef; --gold:#f4d58d;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Outfit',sans-serif;color:var(--ink);
+    background:radial-gradient(1200px 700px at 80% -10%,#16315f 0%,transparent 60%),
+               radial-gradient(900px 600px at -10% 110%,#10294f 0%,transparent 55%),var(--bg);
+    background-attachment:fixed;overflow-x:hidden;
+  }
+  canvas#sky{position:fixed;inset:0;z-index:0;pointer-events:none}
+  canvas#fx{position:fixed;inset:0;z-index:80;pointer-events:none}
+  .hidden{display:none!important}
+  section{position:relative;z-index:2;padding:80px 22px;max-width:980px;margin:0 auto;text-align:center}
+  .screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center}
+
+  .tag{letter-spacing:.38em;font-size:.7rem;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
+  h1{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(2.4rem,8vw,5rem);line-height:1.08}
+  h1 em{font-style:italic;background:linear-gradient(90deg,var(--accent),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+  h2{font-family:'Playfair Display',serif;font-size:clamp(1.7rem,5vw,2.5rem);margin-bottom:8px}
+  .sub{color:var(--mute);margin-top:16px;max-width:460px;line-height:1.7;font-weight:300}
+  .lead{color:var(--mute);margin-bottom:36px;font-weight:300}
+
+  .btn{
+    margin-top:30px;padding:14px 34px;border:none;border-radius:12px;cursor:pointer;font-family:inherit;
+    font-size:.95rem;font-weight:500;color:#06101f;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    box-shadow:0 12px 30px -10px rgba(76,201,240,.65);transition:transform .25s,box-shadow .25s;
+  }
+  .btn:hover{transform:translateY(-3px);box-shadow:0 18px 36px -10px rgba(76,201,240,.8)}
+  .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);box-shadow:none}
+  .btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
+
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .9s,transform .9s}
+  .reveal.in{opacity:1;transform:none}
+
+  /* ----- cake ----- */
+  .cake{position:relative;width:250px;height:240px;margin:34px auto 8px;cursor:pointer}
+  .plate{position:absolute;bottom:0;left:-24px;right:-24px;height:14px;border-radius:50%;background:#1b2b4d;box-shadow:0 10px 24px rgba(0,0,0,.5)}
+  .layer{position:absolute;left:0;right:0;border-radius:14px;overflow:hidden}
+  .l1{bottom:12px;height:72px;background:#3a2a28}
+  .l2{bottom:84px;height:60px;left:28px;right:28px;background:#2f6fb5}
+  .l3{bottom:144px;height:48px;left:56px;right:56px;background:#e8eefb}
+  .drip{position:absolute;top:0;left:0;right:0;height:20px;background:radial-gradient(circle at 12px 0,#e8eefb 12px,transparent 13px) 0 0/30px 20px repeat-x}
+  .l1 .drip{background:radial-gradient(circle at 12px 0,#5a4340 12px,transparent 13px) 0 0/30px 20px repeat-x}
+  .candle{position:absolute;bottom:192px;width:8px;height:40px;border-radius:3px;background:repeating-linear-gradient(45deg,#f4d58d,#f4d58d 6px,#fff 6px,#fff 12px)}
+  .c1{left:calc(50% - 32px)}.c2{left:calc(50% - 4px)}.c3{left:calc(50% + 24px)}
+  .flame{position:absolute;top:-24px;left:50%;width:12px;height:22px;transform:translateX(-50%);
+    background:radial-gradient(ellipse at 50% 70%,#fff6b0 0%,#ffcf5c 55%,rgba(255,150,50,0) 75%);
+    border-radius:50% 50% 50% 50%/60% 60% 40% 40%;animation:flick .18s infinite alternate;
+    box-shadow:0 0 26px 10px rgba(255,200,90,.5);transition:opacity .5s,transform .5s}
+  @keyframes flick{from{transform:translateX(-50%) scale(1,1) rotate(-3deg)}to{transform:translateX(-50%) scale(.9,1.12) rotate(3deg)}}
+  .out .flame{opacity:0;transform:translateX(-50%) scale(.2)}
+  .smoke{position:absolute;top:-30px;left:50%;width:4px;height:4px;border-radius:50%;background:#9fb0cf;opacity:0}
+  .out .smoke{animation:smoke 2s ease-out forwards}
+  @keyframes smoke{0%{opacity:.6;transform:translate(-50%,0) scale(1)}100%{opacity:0;transform:translate(-30%,-60px) scale(7)}}
+  .hint{font-size:.85rem;color:var(--accent);margin-top:18px;animation:pulse 2s infinite}
+  @keyframes pulse{50%{opacity:.35}}
+
+  /* ----- glass card ----- */
+  .glass{background:var(--card);border:1px solid var(--line);border-radius:22px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+  .letter{padding:42px 32px;max-width:600px;margin:0 auto;text-align:left}
+  .letter p{margin-top:16px;line-height:1.9;font-weight:300;color:#d5def2}
+  .sign{margin-top:26px;font-family:'Playfair Display',serif;font-style:italic;color:var(--gold);font-size:1.3rem;text-align:right}
+
+  /* ----- counter ----- */
+  .counter{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:560px;margin:0 auto}
+  .counter div{padding:22px 8px;border-radius:18px}
+  .counter b{display:block;font-size:clamp(1.6rem,6vw,2.6rem);font-weight:700;color:var(--accent)}
+  .counter small{color:var(--mute);font-size:.72rem;letter-spacing:.15em;text-transform:uppercase}
+
+  /* ----- timeline ----- */
+  .timeline{position:relative;max-width:640px;margin:0 auto;text-align:left;padding-left:26px}
+  .timeline::before{content:"";position:absolute;left:6px;top:6px;bottom:6px;width:2px;background:linear-gradient(var(--accent),transparent)}
+  .tl{position:relative;padding:0 0 30px 18px}
+  .tl::before{content:"";position:absolute;left:-26px;top:5px;width:14px;height:14px;border-radius:50%;background:var(--bg);border:2px solid var(--accent);box-shadow:0 0 14px var(--accent)}
+  .tl small{color:var(--gold);letter-spacing:.12em;font-size:.75rem}
+  .tl h3{margin:4px 0;font-weight:500}
+  .tl p{color:var(--mute);font-weight:300;line-height:1.7}
+
+  /* ----- gallery ----- */
+  .tools{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:-10px 0 26px}
+  .tools .btn{margin:0;padding:10px 20px;font-size:.85rem}
+  .grid{columns:3 200px;column-gap:14px}
+  .grid figure{break-inside:avoid;margin-bottom:14px;border-radius:14px;overflow:hidden;position:relative;cursor:pointer;
+    border:1px solid var(--line);background:#101c36;transition:transform .35s,box-shadow .35s}
+  .grid figure:hover{transform:translateY(-4px) scale(1.015);box-shadow:0 20px 40px -18px rgba(76,201,240,.5)}
+  .grid img{width:100%;display:block}
+  .grid .ph{aspect-ratio:4/5;display:grid;place-items:center;font-size:2.4rem;background:linear-gradient(135deg,#12264a,#1d3f78)}
+  .grid figcaption{position:absolute;left:0;right:0;bottom:0;padding:22px 12px 10px;font-size:.8rem;text-align:left;
+    background:linear-gradient(transparent,rgba(0,0,0,.7));opacity:0;transition:opacity .3s}
+  .grid figure:hover figcaption{opacity:1}
+
+  .lb{position:fixed;inset:0;z-index:90;background:rgba(3,7,16,.93);display:none;align-items:center;justify-content:center;flex-direction:column;padding:20px}
+  .lb.on{display:flex}
+  .lb img,.lb .ph{max-width:92vw;max-height:76vh;border-radius:12px;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+  .lb .ph{width:min(80vw,420px);aspect-ratio:4/5;display:grid;place-items:center;font-size:4rem;background:linear-gradient(135deg,#12264a,#1d3f78)}
+  .lb p{margin-top:16px;color:var(--mute)}
+  .lb button{position:absolute;background:var(--card);border:1px solid var(--line);color:#fff;width:46px;height:46px;border-radius:50%;font-size:1.2rem;cursor:pointer}
+  .lb .x{top:20px;right:20px}.lb .pv{left:16px;top:50%}.lb .nx{right:16px;top:50%}
+
+  /* ----- reasons ----- */
+  .reason{min-height:120px;max-width:520px;margin:0 auto;padding:30px 26px;display:flex;align-items:center;justify-content:center;
+    font-family:'Playfair Display',serif;font-style:italic;font-size:1.25rem;line-height:1.6;transition:opacity .3s,transform .3s}
+  .reason.swap{opacity:0;transform:scale(.96)}
+
+  /* ----- scratch ----- */
+  .vouchers{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+  .v{position:relative;height:130px;border-radius:16px;overflow:hidden;border:1px dashed rgba(244,213,141,.6);background:linear-gradient(135deg,#17294d,#0f1d3a)}
+  .v .prize{position:absolute;inset:0;display:grid;place-items:center;padding:10px;font-weight:500;color:var(--gold);line-height:1.4}
+  .v canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair}
+
+  /* ----- quiz ----- */
+  .quiz{max-width:560px;margin:0 auto;padding:30px 24px;text-align:left}
+  .quiz h3{font-weight:500;line-height:1.5;margin-bottom:18px}
+  .opt{display:block;width:100%;text-align:left;margin-top:10px;padding:14px 16px;border-radius:12px;border:1px solid var(--line);
+    background:transparent;color:var(--ink);font-family:inherit;font-size:.95rem;cursor:pointer;transition:.2s}
+  .opt:hover{border-color:var(--accent);background:rgba(76,201,240,.08)}
+  .opt.ok{border-color:#5be3a0;background:rgba(91,227,160,.14)}
+  .opt.no{border-color:#ff7a8a;background:rgba(255,122,138,.14)}
+  .qstat{color:var(--mute);font-size:.8rem;margin-bottom:10px}
+
+  /* ----- question ----- */
+  .ask{position:relative;height:220px}
+  .ask .row{display:flex;gap:16px;justify-content:center;align-items:center}
+  #noBtn{position:relative}
+  #resp{margin-top:18px;color:var(--gold);min-height:28px}
+
+  footer{padding:60px 20px 90px;color:var(--mute);text-align:center;position:relative;z-index:2}
+
+  .music{position:fixed;top:16px;right:16px;z-index:70;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--card);
+    color:#fff;font-size:1.1rem;cursor:pointer;backdrop-filter:blur(10px)}
+</style>
+</head>
+<body>
+
+<canvas id="sky"></canvas>
+<canvas id="fx"></canvas>
+<button class="music" id="musicBtn" title="Nyalakan / matikan musik">🎵</button>
+<audio id="bgm" loop></audio>
+
+<!-- LIGHTBOX -->
+<div class="lb" id="lb">
+  <button class="x" id="lbX">✕</button><button class="pv" id="lbP">‹</button><button class="nx" id="lbN">›</button>
+  <div id="lbMedia"></div><p id="lbCap"></p>
+</div>
+
+<!-- INTRO -->
+<div class="screen" id="intro">
+  <div class="tag">Ciee 21++ · <span id="ageEl">+1</span></div>
+  <h1>Happy Birthday,<br><em id="nameEl">Bro</em></h1>
+  <p class="sub">Kejutan sepenuh hati buat kamu tersayang.</p>
+  <button class="btn" id="openBtn">Buka kejutannya 🎁</button>
+</div>
+
+<!-- CAKE -->
+<div class="screen hidden" id="cakeSec">
+  <div class="tag">Make a wish</div>
+  <h2>Tiup lilinnya dulu 🕯️</h2>
+  <div class="cake" id="cake">
+    <div class="plate"></div>
+    <div class="layer l1"><div class="drip"></div></div>
+    <div class="layer l2"><div class="drip" style="background:radial-gradient(circle at 12px 0,#2f6fb5 12px,transparent 13px) 0 0/30px 20px repeat-x"></div></div>
+    <div class="layer l3"></div>
+    <div class="candle c1"><div class="flame"></div><div class="smoke"></div></div>
+    <div class="candle c2"><div class="flame"></div><div class="smoke"></div></div>
+    <div class="candle c3"><div class="flame"></div><div class="smoke"></div></div>
+  </div>
+  <p class="hint" id="hint">Klik kuenya untuk meniup lilin</p>
+</div>
+
+<!-- MAIN -->
+<main class="hidden" id="main">
+
+  <section class="reveal">
+    <div class="tag">Untuk kamu</div>
+    <h2 id="toEl">Hai,</h2>
+    <div class="glass letter">
+      <div id="lines"></div>
+      <div class="sign" id="fromEl">— aku</div>
+    </div>
+  </section>
+
+  <section class="reveal">
+    <div class="tag">Kita sudah sejauh ini</div>
+    <h2>Waktu yang kita lewati bareng</h2>
+    <p class="lead" id="sinceLbl"></p>
+    <div class="counter">
+      <div class="glass"><b id="cD">0</b><small>Hari</small></div>
+      <div class="glass"><b id="cH">0</b><small>Jam</small></div>
+      <div class="glass"><b id="cM">0</b><small>Menit</small></div>
+      <div class="glass"><b id="cS">0</b><small>Detik</small></div>
+    </div>
+  </section>
+
+  <section class="reveal">
+    <div class="tag">Our story</div>
+    <h2>Perjalanan kita</h2>
+    <p class="lead">Beberapa momen yang nggak bakal aku lupa</p>
+    <div class="timeline" id="timeline"></div>
+  </section>
+
+  <section class="reveal">
+    <div class="tag">Memories</div>
+    <h2>Galeri kita 📸</h2>
+    <p class="lead">Klik foto untuk memperbesar</p>
+    <div class="tools">
+      <button class="btn ghost" id="slideBtn">▶ Putar slideshow</button>
+      <button class="btn ghost" id="shuffleBtn">🔀 Acak foto</button>
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section class="reveal">
+    <div class="tag">Random facts</div>
+    <h2>Alasan aku sayang kamu</h2>
+    <p class="lead">Tekan tombolnya, dan tiap alasan beda-beda</p>
+    <div class="glass reason" id="reason">Tekan tombol di bawah 👇</div>
+    <button class="btn" id="reasonBtn">Alasan berikutnya 💙</button>
+  </section>
+
+  <section class="reveal">
+    <div class="tag">Coupons</div>
+    <h2>Voucher spesial 🎟️</h2>
+    <p class="lead">Gosok untuk melihat hadiahnya</p>
+    <div class="vouchers" id="vouchers"></div>
+  </section>
+
+  <section class="reveal">
+    <div class="tag">Mini game</div>
+    <h2>Seberapa kenal kamu sama aku?</h2>
+    <p class="lead">Jawab jujur ya 😏</p>
+    <div class="glass quiz" id="quiz"></div>
+  </section>
+
+  <section class="reveal">
+    <div class="tag">One last thing</div>
+    <h2>Satu pertanyaan penting...</h2>
+    <p class="lead" id="askQ"></p>
+    <div class="ask">
+      <div class="row">
+        <button class="btn" id="yesBtn" style="margin-top:0">Iya dong 💙</button>
+        <button class="btn ghost" id="noBtn" style="margin-top:0">Nggak</button>
+      </div>
+      <div id="resp"></div>
+    </div>
+  </section>
+
+  <footer>
+    <button class="btn" id="fireBtn" style="margin-top:0">🎆 Kembang api!</button>
+    <p style="margin-top:22px;font-weight:300" id="footTxt"></p>
+  </footer>
+</main>
+
+<script>
+/* ==================================================================
+   ✏️  EDIT BAGIAN INI SAJA
+   ================================================================== */
+const CONFIG = {
+  name: "Sayang",                 
+  age: "level up",                        
+  from: "your love",                    // nama kamu
+  startDate: "12-24-2025", // tanggal jadian (YYYY-MM-DD)
+  music: "lagu.mp3",              // taruh lagu favorit kalian di folder yang sama dengan nama ini.
+                                  // Kalau file-nya tidak ada, otomatis pakai musik bawaan (Happy Birthday versi music box)
+
+  messages: [
+    "happy birthday !! to my favorite person, my heart feel safe and happy. thank you for staying, for understanding me, and for loving me with all your heart. i'm beyond grateful to have you in my life, i love you, and i hope this year brings you more joy, more strength, and everything you've been praying for. happy birthday, my love. <3 💙"
+  ],
+
+  // FOTO: taruh semua foto di folder "foto" -> foto/1.jpg, foto/2.jpg, dst.
+  photoFolder: "foto/", 
+  photoExt: "jpeg",
+  photoCount: 12,                 // jumlah foto yang kamu punya
+  captions: [                     // opsional, urut sesuai nomor foto
+     "Satu bulan rayain anniversary",   // 1.jpeg
+     "Aku ajak jalan karna mau supresin kamu",   // 2.jpeg
+     "Day one pake batik bareng >>~<<",   // 3.jpeg
+     "Kamu pulang pake matel lucukk >>~<<",   // 4.jpeg
+     "Detik-detik mau di tembak >>~<<",   // 5.jpeg
+     "First time diajakin keluar medan >>~<<",   // 6.jpeg
+     "Pap dari kamu yg ganteng abis >>~<<",   // 7.jpeg
+     "Ban mobil kamu bocor, mana kamu puasa lagi ><",   // 8.jpeg
+     "Kamu menjadi ikan blub blub >>~<<",   // 9.jpeg
+     "Gramed date unlock >>~<<",   // 10.jpeg
+     "Photobox date unlock >>~<<",   // 11.jpeg
+     "Kamu bujuk aku yang ngambek gemess >>~<<",   // 12.jpeg
+  ],
+
+  timeline: [
+    { date:"Hari pertama",  title:"Pertama kali ketemu",  text:"awalnya biasa aja, ternyata jadi awal segalanya. yang awalnya kagum melihat kamu dengan segala isi pikiranmu, yang buatku ingin kamu menjadi milikku>.<" },
+    { date:"Beberapa bulan", title:"Mulai nyaman",         text:"mulai sadar kalau mabar sama kamu nggak pernah bikin capek, malah bikin candu. selalu nunggu episode dimana kamu ngajakin mabar dan panggil aku kak aseline^.^" },
+    { date:"Hari jadian",    title:"Resmi jadi kita",      text:"setelah penantian lama, kamu berani ambil keputusan untuk menjadikanku pacarmu. ternyata gini ya rasanya pacaran dengan orang yang kusuka~,~" },
+    { date:"Hari ini",       title:"Ulang tahun kamu 🎂",  text:"dan aku masih jatuh hati sama orang yang sama dan akan selalu begitu. i love u today, tomorrow and forever<3" }
+  ],
+
+  reasons: [
+    "Karena kamu sabar banget ngadepin aku.",
+    "Karena kamu lucuuu.",
+    "Karena kamu selalu berusaha, walau lagi capek.",
+    "Karena kamu bikin aku ingin jadi versi terbaik diriku.",
+    "Karena bareng kamu, diam pun nyaman.",
+    "Karena kamu peduli sama hal-hal kecil.",
+    "Karena kamu... ya kamu. 💙"
+  ],
+
+  vouchers: [
+    "🍔 Traktir makan favoritmu",
+    "🎮 Unboxing kado ulang tahun kamu",
+    "💆 Tiup lilin dan make a wish",
+    "🎬 Photobox",
+    "🤗 Peluk gratis kapan saja",
+    "🍦 Es krim, aku yang bayar"
+  ],
+
+  quiz: [
+    { q:"Makanan favorit aku?",         opts:["Nasi goreng","Mie ayam","Pizza","Sate"], ans:0 },
+    { q:"Cemilan favorit aku?",         opts:["Telur gulung","Burger","Siomay","Cilok"], ans:1 },
+    { q:"Warna favorit aku?",         opts:["Merah","Pink","Navy","Biru muda"], ans:3 },
+    { q:"Tanggal jadian kita bulan apa?", opts:["Januari","April","Desember","Oktober"],      ans:2 },
+    { q:"Siapa yang lebih sering ngambek?", opts:["Aku","Kamu","Dua-duanya","Nggak ada"], ans:2 }
+  ],
+
+  askQuestion: "Mau tetap jadi pacarku tahun depan juga?",
+  noTexts: ["Yakin?","Coba pikir lagi 🥺","Masa sih?","Tombolnya capek lho 😭","Udah, pencet Iya aja"],
+  yesText: "Yey! Sayang kamu banget. Happy birthday sekali lagi! 💙🎉",
+  footer: "Dibuat dengan 💙 khusus untuk pacarku"
+};
+/* ================================================================== */
+
+const $ = id => document.getElementById(id);
+const rand = a => a[Math.floor(Math.random()*a.length)];
+
+/* ---------- texts ---------- */
+$("nameEl").textContent = CONFIG.name;
+$("toEl").textContent = `Hai, ${CONFIG.name}`;
+$("fromEl").textContent = `— ${CONFIG.from}`;
+$("askQ").textContent = CONFIG.askQuestion;
+$("footTxt").textContent = CONFIG.footer;
+if(CONFIG.age) $("ageEl").textContent = CONFIG.age;
+$("sinceLbl").textContent = "Sejak " + new Date(CONFIG.startDate).toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"});
+
+/* ---------- starry sky ---------- */
+const sky = $("sky"), sctx = sky.getContext("2d");
+let stars = [], shoots = [];
+function sizeSky(){
+  sky.width = innerWidth; sky.height = innerHeight;
+  stars = Array.from({length:Math.floor(innerWidth*innerHeight/6500)},()=>({
+    x:Math.random()*sky.width,y:Math.random()*sky.height,r:Math.random()*1.4+.2,p:Math.random()*6.28,s:.01+Math.random()*.03
+  }));
+}
+sizeSky(); addEventListener("resize",sizeSky);
+(function skyLoop(){
+  sctx.clearRect(0,0,sky.width,sky.height);
+  stars.forEach(s=>{
+    s.p+=s.s; sctx.globalAlpha = .35+.65*Math.abs(Math.sin(s.p));
+    sctx.fillStyle="#cfe3ff"; sctx.beginPath(); sctx.arc(s.x,s.y,s.r,0,6.28); sctx.fill();
+  });
+  if(Math.random()<.006) shoots.push({x:Math.random()*sky.width*.8,y:Math.random()*sky.height*.4,l:0});
+  shoots = shoots.filter(m=>m.l<40);
+  shoots.forEach(m=>{
+    m.l++; m.x+=11; m.y+=5;
+    const g = sctx.createLinearGradient(m.x,m.y,m.x-90,m.y-40);
+    g.addColorStop(0,"rgba(255,255,255,.9)"); g.addColorStop(1,"rgba(255,255,255,0)");
+    sctx.globalAlpha=1; sctx.strokeStyle=g; sctx.lineWidth=1.6;
+    sctx.beginPath(); sctx.moveTo(m.x,m.y); sctx.lineTo(m.x-90,m.y-40); sctx.stroke();
+  });
+  requestAnimationFrame(skyLoop);
+})();
+
+/* ---------- confetti + fireworks ---------- */
+const cv = $("fx"), ctx = cv.getContext("2d"); let parts = [], sparks = [];
+function sizeFx(){ cv.width=innerWidth; cv.height=innerHeight; } sizeFx(); addEventListener("resize",sizeFx);
+const COLORS = ["#4cc9f0","#4895ef","#f4d58d","#ffffff","#7bdff2","#b2f7ef"];
+function confetti(n=150){
+  for(let i=0;i<n;i++) parts.push({x:innerWidth/2,y:innerHeight/2.3,vx:(Math.random()-.5)*15,vy:Math.random()*-14-3,
+    w:6+Math.random()*6,h:4+Math.random()*6,r:Math.random()*6,vr:(Math.random()-.5)*.3,c:rand(COLORS),life:0});
+}
+function firework(x,y){
+  const c = rand(COLORS);
+  for(let i=0;i<70;i++){
+    const a = Math.PI*2*i/70, sp = 2+Math.random()*4;
+    sparks.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:0,c});
+  }
+}
+function shootFireworks(){
+  for(let i=0;i<7;i++) setTimeout(()=>firework(innerWidth*(.15+Math.random()*.7),innerHeight*(.15+Math.random()*.4)),i*380);
+}
+(function fxLoop(){
+  ctx.clearRect(0,0,cv.width,cv.height);
+  parts = parts.filter(p=>p.y<cv.height+30&&p.life<260);
+  parts.forEach(p=>{
+    p.vy+=.28;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;p.life++;
+    ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.r);ctx.globalAlpha=Math.max(0,1-p.life/260);
+    ctx.fillStyle=p.c;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();
+  });
+  sparks = sparks.filter(s=>s.life<70);
+  sparks.forEach(s=>{
+    s.vy+=.04;s.vx*=.985;s.vy*=.985;s.x+=s.vx;s.y+=s.vy;s.life++;
+    ctx.globalAlpha=1-s.life/70;ctx.fillStyle=s.c;ctx.beginPath();ctx.arc(s.x,s.y,2,0,6.28);ctx.fill();
+  });
+  requestAnimationFrame(fxLoop);
+})();
+addEventListener("click",e=>{ if(!$("main").classList.contains("hidden") && e.target.tagName==="BODY") firework(e.clientX,e.clientY); });
+
+/* ---------- music ---------- */
+const bgm=$("bgm"); let playing=false, useFile=!!CONFIG.music;
+let ac=null, master=null, synthTimer=null;
+
+// Kalau file lagu ada -> dipakai. Kalau tidak ada / gagal -> otomatis pakai musik bawaan (music box).
+if(useFile){
+  bgm.src=CONFIG.music; bgm.volume=.85;
+  bgm.addEventListener("error",()=>{ useFile=false; if(playing) startSynth(); });
+}
+
+const F={C3:130.81,G3:196.0,F3:174.61,E4:329.63,G4:392,A4:440,B4:493.88,C5:523.25,D5:587.33,E5:659.25,F5:698.46,G5:783.99};
+// Melodi "Happy Birthday": [nada, panjang ketukan]
+const MELODY=[
+  ["G4",.75],["G4",.25],["A4",1],["G4",1],["C5",1],["B4",2],
+  ["G4",.75],["G4",.25],["A4",1],["G4",1],["D5",1],["C5",2],
+  ["G4",.75],["G4",.25],["G5",1],["E5",1],["C5",1],["A4",1],
+  ["F5",.75],["F5",.25],["E5",1],["C5",1],["D5",1],["C5",2]
+];
+const BASS=["C3","G3","C3","F3","C3","C3"]; // per 3 ketukan
+const BEAT=.62, REST=4;                      // detik per ketukan, jeda antar putaran
+
+function buildMaster(){
+  if(!ac) ac=new (window.AudioContext||window.webkitAudioContext)();
+  master=ac.createGain(); master.gain.value=.55;
+  const d=ac.createDelay(); d.delayTime.value=.32;
+  const fb=ac.createGain(); fb.gain.value=.38;
+  master.connect(ac.destination); master.connect(d); d.connect(fb); fb.connect(d); d.connect(ac.destination);
+}
+function tone(freq,t,dur,type,vol){
+  const o=ac.createOscillator(), g=ac.createGain();
+  o.type=type; o.frequency.value=freq;
+  g.gain.setValueAtTime(0.0001,t);
+  g.gain.linearRampToValueAtTime(vol,t+.012);
+  g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  o.connect(g); g.connect(master); o.start(t); o.stop(t+dur+.05);
+}
+function scheduleCycle(t){
+  let beat=0;
+  MELODY.forEach(([n,len])=>{
+    const at=t+beat*BEAT;
+    tone(F[n],at,1.5,"sine",.45);           // music box
+    tone(F[n]*2,at,.7,"sine",.10);          // kilau
+    beat+=len;
+  });
+  for(let i=0;i<8;i++){                      // bass lembut
+    const b=BASS[i%BASS.length]; tone(F[b],t+i*3*BEAT,3*BEAT*.95,"triangle",.22);
+  }
+  const cycle=beat*BEAT+REST;
+  synthTimer=setTimeout(()=>scheduleCycle(t+cycle),(t+cycle-ac.currentTime-1)*1000);
+}
+function startSynth(){
+  if(synthTimer) return;
+  buildMaster(); ac.resume();
+  scheduleCycle(ac.currentTime+.15);
+}
+function stopSynth(){
+  clearTimeout(synthTimer); synthTimer=null;
+  if(master){ master.gain.setTargetAtTime(0,ac.currentTime,.08); master=null; }
+}
+function startMusic(){
+  playing=true; $("musicBtn").textContent="🎶";
+  if(useFile) bgm.play().catch(()=>{ useFile=false; startSynth(); });
+  else startSynth();
+}
+function stopMusic(){
+  playing=false; $("musicBtn").textContent="🎵";
+  bgm.pause(); stopSynth();
+}
+$("musicBtn").onclick=()=>playing?stopMusic():startMusic();
+
+/* ---------- flow ---------- */
+function show(id){ ["intro","cakeSec"].forEach(s=>$(s).classList.toggle("hidden",s!==id)); scrollTo(0,0); }
+$("openBtn").onclick=()=>{ show("cakeSec"); startMusic(); };
+
+let blown=false;
+$("cake").onclick=()=>{
+  if(blown) return; blown=true;
+  $("cake").classList.add("out"); $("hint").textContent="Semoga semua wish-mu terkabul 💙";
+  confetti(); setTimeout(()=>{ confetti(120); openMain(); },2000);
+};
+
+function openMain(){
+  $("intro").classList.add("hidden"); $("cakeSec").classList.add("hidden");
+  $("main").classList.remove("hidden"); scrollTo(0,0);
+  buildLetter(); buildTimeline(); buildGallery(); buildVouchers(); buildQuiz(); observe();
+  tick(); setInterval(tick,1000);
+}
+
+/* ---------- letter ---------- */
+function buildLetter(){
+  const box=$("lines"); box.innerHTML="";
+  CONFIG.messages.forEach(m=>{ const p=document.createElement("p"); p.textContent=m; box.appendChild(p); });
+}
+
+/* ---------- counter ---------- */
+function tick(){
+  let d=Math.max(0,Date.now()-new Date(CONFIG.startDate).getTime())/1000;
+  $("cD").textContent=Math.floor(d/86400);
+  $("cH").textContent=Math.floor(d/3600)%24;
+  $("cM").textContent=Math.floor(d/60)%60;
+  $("cS").textContent=Math.floor(d)%60;
+}
+
+/* ---------- timeline ---------- */
+function buildTimeline(){
+  $("timeline").innerHTML=CONFIG.timeline.map(t=>`<div class="tl"><small>${t.date.toUpperCase()}</small><h3>${t.title}</h3><p>${t.text}</p></div>`).join("");
+}
+
+/* ---------- gallery ---------- */
+let photos=[], cur=0, slideTimer=null;
+const EMOJIS=["📸","🌆","🍜","🏞️","🎮","☕","🚗","🌙","⚽","🎬","🍕","🎧"];
+function makePhotos(){
+  photos=Array.from({length:CONFIG.photoCount},(_,i)=>({
+    src:`${CONFIG.photoFolder}${i+1}.${CONFIG.photoExt}`,
+    cap:CONFIG.captions[i]||`Kenangan #${i+1}`, emoji:EMOJIS[i%EMOJIS.length]
+  }));
+}
+function buildGallery(){
+  if(!photos.length) makePhotos();
+  const g=$("grid"); g.innerHTML="";
+  photos.forEach((p,i)=>{
+    const f=document.createElement("figure");
+    const img=new Image(); img.loading="lazy"; img.alt=p.cap; img.src=p.src;
+    img.onerror=()=>{ const d=document.createElement("div"); d.className="ph"; d.textContent=p.emoji; img.replaceWith(d); p.missing=true; };
+    f.appendChild(img);
+    const c=document.createElement("figcaption"); c.textContent=p.cap; f.appendChild(c);
+    f.onclick=()=>openLb(i); g.appendChild(f);
+  });
+}
+function openLb(i){
+  cur=(i+photos.length)%photos.length; const p=photos[cur];
+  const m=$("lbMedia"); m.innerHTML="";
+  if(p.missing){ const d=document.createElement("div"); d.className="ph"; d.textContent=p.emoji; m.appendChild(d); }
+  else { const im=new Image(); im.src=p.src; im.onerror=()=>{ m.innerHTML=`<div class="ph">${p.emoji}</div>`; }; m.appendChild(im); }
+  $("lbCap").textContent=`${p.cap}  ·  ${cur+1}/${photos.length}`; $("lb").classList.add("on");
+}
+function closeLb(){ $("lb").classList.remove("on"); stopSlide(); }
+function stopSlide(){ clearInterval(slideTimer); slideTimer=null; $("slideBtn").textContent="▶ Putar slideshow"; }
+$("lbX").onclick=closeLb; $("lbP").onclick=()=>openLb(cur-1); $("lbN").onclick=()=>openLb(cur+1);
+$("lb").onclick=e=>{ if(e.target.id==="lb") closeLb(); };
+addEventListener("keydown",e=>{ if(!$("lb").classList.contains("on"))return;
+  if(e.key==="Escape")closeLb(); if(e.key==="ArrowLeft")openLb(cur-1); if(e.key==="ArrowRight")openLb(cur+1); });
+$("slideBtn").onclick=()=>{
+  if(slideTimer){ stopSlide(); closeLb(); return; }
+  openLb(0); $("slideBtn").textContent="⏸ Berhenti";
+  slideTimer=setInterval(()=>openLb(cur+1),2800);
+};
+$("shuffleBtn").onclick=()=>{ photos.sort(()=>Math.random()-.5); buildGallery(); };
+
+/* ---------- reasons ---------- */
+let rIdx=-1, rOrder=[];
+$("reasonBtn").onclick=()=>{
+  if(rIdx<0||rIdx>=rOrder.length-1){ rOrder=CONFIG.reasons.map((_,i)=>i).sort(()=>Math.random()-.5); rIdx=-1; }
+  rIdx++; const r=$("reason"); r.classList.add("swap");
+  setTimeout(()=>{ r.textContent=CONFIG.reasons[rOrder[rIdx]]; r.classList.remove("swap"); },280);
+  if(Math.random()<.3) confetti(40);
+};
+
+/* ---------- scratch vouchers ---------- */
+function buildVouchers(){
+  const wrap=$("vouchers"); wrap.innerHTML="";
+  CONFIG.vouchers.forEach(t=>{
+    const v=document.createElement("div"); v.className="v";
+    v.innerHTML=`<div class="prize">${t}</div><canvas></canvas>`; wrap.appendChild(v);
+  });
+  requestAnimationFrame(()=>wrap.querySelectorAll(".v").forEach(initScratch));
+}
+function initScratch(v){
+  const c=v.querySelector("canvas"), r=v.getBoundingClientRect(), x=c.getContext("2d");
+  c.width=r.width; c.height=r.height;
+  const g=x.createLinearGradient(0,0,c.width,c.height); g.addColorStop(0,"#9fb0cf"); g.addColorStop(.5,"#d8e2f5"); g.addColorStop(1,"#8497bb");
+  x.fillStyle=g; x.fillRect(0,0,c.width,c.height);
+  x.fillStyle="rgba(20,35,70,.55)"; x.font="500 15px Outfit"; x.textAlign="center"; x.fillText("✨ Gosok di sini ✨",c.width/2,c.height/2+5);
+  let down=false, done=false;
+  const scratch=e=>{
+    if(!down||done) return;
+    const b=c.getBoundingClientRect(); x.globalCompositeOperation="destination-out";
+    x.beginPath(); x.arc(e.clientX-b.left,e.clientY-b.top,20,0,6.28); x.fill();
+    if(Math.random()<.12) check();
+  };
+  const check=()=>{
+    const d=x.getImageData(0,0,c.width,c.height).data; let t=0;
+    for(let i=3;i<d.length;i+=40) if(d[i]===0) t++;
+    if(t/(d.length/40)>.5){ done=true; c.style.transition="opacity .6s"; c.style.opacity=0; confetti(60); }
+  };
+  c.addEventListener("pointerdown",e=>{down=true;c.setPointerCapture(e.pointerId);scratch(e)});
+  c.addEventListener("pointermove",scratch);
+  c.addEventListener("pointerup",()=>down=false);
+}
+
+/* ---------- quiz ---------- */
+let qi=0, score=0;
+function buildQuiz(){ qi=0; score=0; renderQ(); }
+function renderQ(){
+  const box=$("quiz"), Q=CONFIG.quiz;
+  if(qi>=Q.length){
+    const msg=score===Q.length?"Perfect! Kamu emang paling ngerti aku 💙":score>0?"Lumayan! Masih perlu belajar lagi nih 😆":"Wah... kita perlu quality time lebih banyak 😭";
+    box.innerHTML=`<div class="qstat">Selesai</div><h3>Skor kamu: ${score}/${Q.length}</h3><p style="color:var(--mute)">${msg}</p><button class="btn ghost" id="retry" style="margin-top:20px">Ulangi</button>`;
+    if(score===Q.length) confetti(); $("retry").onclick=buildQuiz; return;
+  }
+  const q=Q[qi];
+  box.innerHTML=`<div class="qstat">Pertanyaan ${qi+1} dari ${Q.length}</div><h3>${q.q}</h3>`+q.opts.map((o,i)=>`<button class="opt" data-i="${i}">${o}</button>`).join("");
+  box.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.i; box.querySelectorAll(".opt").forEach(x=>x.disabled=true);
+    box.querySelectorAll(".opt")[q.ans].classList.add("ok");
+    if(i===q.ans) score++; else b.classList.add("no");
+    setTimeout(()=>{qi++;renderQ()},1100);
+  });
+}
+
+/* ---------- the question (runaway No) ---------- */
+let noCount=0;
+const noBtn=$("noBtn"), yesBtn=$("yesBtn");
+function dodge(){
+  noCount++; noBtn.textContent=CONFIG.noTexts[Math.min(noCount-1,CONFIG.noTexts.length-1)];
+  noBtn.style.position="fixed";
+  const w=noBtn.offsetWidth,h=noBtn.offsetHeight;
+  noBtn.style.left=Math.random()*(innerWidth-w-20)+10+"px";
+  noBtn.style.top=Math.random()*(innerHeight-h-20)+10+"px";
+  yesBtn.style.transform=`scale(${Math.min(1+noCount*.12,1.8)})`;
+}
+noBtn.addEventListener("mouseenter",dodge);
+noBtn.addEventListener("touchstart",e=>{e.preventDefault();dodge()},{passive:false});
+noBtn.addEventListener("click",dodge);
+yesBtn.onclick=()=>{ $("resp").textContent=CONFIG.yesText; noBtn.style.display="none"; confetti(220); shootFireworks(); };
+
+/* ---------- misc ---------- */
+$("fireBtn").onclick=shootFireworks;
+function observe(){
+  const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target);} }),{threshold:.15});
+  document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
+}
+</script>
+</body>
+</html>
